@@ -6,12 +6,12 @@ public class CameraController : MonoBehaviour
     public float minZoom = 20.0f;
     public float maxZoom = 100.0f; 
 
-    public float dragSpeed = 15.0f;
+    public float dragSpeed = 40.0f;
     public float zoomSpeed = 15.0f;
     public float panSpeed = 15.0f;
-    public float rotationSpeed = 15.0f;
-    public Vector3 minBoundaries = new Vector3(10, 5s, );
-    public Vector3 maxBoundaries = new Vector3(10, 0, 10);
+    public float rotationSpeed = 500.0f;
+    public Vector3 minBoundaries = new Vector3(-10, 7, -5);
+    public Vector3 maxBoundaries = new Vector3(15, 7, 15);
 
     void Update()
     {
