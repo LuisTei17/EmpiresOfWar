@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
     public float dragSpeed = 40.0f;
     public float zoomSpeed = 15.0f;
     public float panSpeed = 15.0f;
-    public float rotationSpeed = 500.0f;
+    public float rotationSpeed = 50.0f;
     public Vector3 minBoundaries = new Vector3(-10, 7, -5);
     public Vector3 maxBoundaries = new Vector3(15, 7, 15);
 
@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour
         HandleDrag();
         HandlePan();
         HandleRotation();
+        HandleKeyboardRotation();
     }
 
         void HandleZoom()
@@ -62,13 +63,28 @@ public class CameraController : MonoBehaviour
         dragOrigin = Input.mousePosition;
     }
 
-      void HandlePan()
+    void HandlePan()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        Vector3 move = new Vector3(-horizontal, 0, -vertical) * panSpeed * Time.deltaTime;
+        Vector3 right = transform.right;
+        Vector3 forward = transform.forward;
+
+        right.y = 0;
+        forward.y = 0;
+
+        right.Normalize();
+        forward.Normalize();
+
+        Vector3 move = (right * horizontal + forward * vertical) * panSpeed * Time.deltaTime;
+
         transform.Translate(move, Space.World);
+
+        Vector3 clampedPosition = transform.position;
+        clampedPosition.x = Mathf.Clamp(clampedPosition.x, minBoundaries.x, maxBoundaries.x);
+        clampedPosition.z = Mathf.Clamp(clampedPosition.z, minBoundaries.z, maxBoundaries.z);
+        transform.position = clampedPosition;
     }
 
      void HandleRotation()
@@ -82,5 +98,18 @@ public class CameraController : MonoBehaviour
 
             transform.Rotate(Vector3.right, -vertical, Space.Self);
         }
+    }
+
+    void HandleKeyboardRotation()
+    {
+        float rotationInput = 0;
+
+        if (Input.GetKey(KeyCode.Q))
+            rotationInput = -1;
+        else if (Input.GetKey(KeyCode.E))
+            rotationInput = 1;
+
+        if (rotationInput != 0)
+            transform.Rotate(Vector3.up, rotationInput * rotationSpeed * Time.deltaTime, Space.World);
     }
 }
